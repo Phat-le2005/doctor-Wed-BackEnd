@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+    </style>
+    <body>
+    
+    <h2>Data User</h2>
+    <table style="width:100%">
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Address</th>
+        <th>PhoneNumber</th>
+      </tr>
+      <%for(let i=0;i < dataTable.length;i++){ %>
+      <tr>
+        <td><%= dataTable[i].id %></td>
+        <td><%= dataTable[i].email %></td>
+        <td><%= dataTable[i].password %></td>
+        <td><%= dataTable[i].address %></td>
+        <td><%= dataTable[i].phonenumber %></td>
+      </tr>
+      <% } %>
+    </table>
+    
+    </body>
+</html>
