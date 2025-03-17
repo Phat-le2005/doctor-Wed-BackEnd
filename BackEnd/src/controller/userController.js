@@ -1,30 +1,20 @@
 import userService from "../service/userService"
 import DB from "../models/index"
-
 const getAllUser = async (req, res) => {
     try {
-        // Lấy `id` từ body (nếu cần)
-        let id = req.body.id;
-         // Gọi service để lấy danh sách người dùng
-         let users = await userService.getAllUser(id);
-        if(!id){
-            return res.status(200).json({
-                errCode: 0,
-                errMessage: 'Your ID is missing',
-                user:''
-            })
-        }
-       
-
-        return res.status(200).json({
-            errCode: 0,
-            errMessage: 'OK',
-            data: users, // Trả dữ liệu về cho client
+      if (!req.query || Object.keys(req.query).length === 0) {
+        return res.status(400).json({
+          errCode: 1,
+          errMessage: 'No Input',
         });
-    } catch (e) {
-        req(e)
+      }
+  
+      const result = await userService.getAllUserService({ query: req.query });
+      return res.status(200).json(result); 
+    } catch (error) {
+      return res.status(400).json(error);
     }
-};
+  };
 const validateEmail = (email) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(String(email).toLowerCase());
@@ -50,7 +40,7 @@ const postUser = async (req, res) => {
         return res.status(200).json({
             errCode: 0,
             errMessage: 'Create Successful',
-            data: message
+            data: data
         });
     } catch (error) {
         return res.status(500).json({

@@ -1,43 +1,18 @@
 import { where } from "sequelize"
 import DB from "../models/index"
 import bcrypt from 'bcryptjs'
-const getAllUser=(userId)=>{
-    return new Promise(async(resolve,reject)=>{
-        try {
-            let user=''
-            if(userId=='ALL'){
-                user = DB.User.findAll({
-                    attributes: {
-                        exclude: [ 'password']
-                    }
-                })
-            }
-            if(userId && userId!= 'ALL'){
-                user = await DB.User
-                .findOne({
-                    where:{id: userId},
-                    attributes: {
-                        exclude: [ 'password']
-                    }
-                })
-            }
-            resolve(user)
-        } catch (e) {
-            reject(e)            
-        }
-    })
-}
+import { resolve } from "path"
+
 const postUser = (data)=>{
     return new Promise(async(resolve,reject)=>{
         try {
-            
            await DB.User.create({
             email: data.email,
             password: data.password,
-            firstName: '',
-            lastName: '',
-            address: data.address,
-            phonenumber:data.phone,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: '',
+            phonenumber:data.phoneNumber,
             sex: data.gender === 'male' ? true : false,
             image: '',
             roleId :'R1',
@@ -65,8 +40,39 @@ const handleLogin = (data)=>{
         }
     })
 }
+const getAllUserService = async ({ query }) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const page = parseInt(query.page) || 1;
+        const limit = parseInt(query.limit) || 10;
+        const offset = (page - 1) * limit;
+  
+        const { count, rows } = await DB.User.findAndCountAll({
+          offset,
+          limit,
+          order: [['createdAt', 'DESC']],
+        });
+  
+        resolve({
+          errCode: 0,
+          page,
+          limit,
+          totalUsers: count,
+          totalPages: Math.ceil(count / limit),
+          data: rows,
+        });
+      } catch (error) {
+        reject({
+          errCode: 1,
+          errMessage: 'Failed to fetch users',
+          error: error.message,
+        });
+      }
+    });
+  };
+  
 module.exports={
-    getAllUser:getAllUser,
+    getAllUserService:getAllUserService,
     postUser:postUser,
     handleLogin: handleLogin
 }
