@@ -14,6 +14,7 @@ const initWedRouter = (app)=>{
     router.get("/api/get-all-users",userController.getAllUser)
     router.post("/api/post-user",userController.postUser)
     router.post("/api/login", userController.handleLogin);
+    router.delete("/api/delete_user/:id", userController.deleteUser);
     
     return app.use("/",router)
 }

@@ -4,24 +4,23 @@ const {
   BOOLEAN
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class History extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class MedicalHistorie extends Model {
     static associate(models) {
-      // define association here
+      MedicalHistorie.belongsTo(models.Appointment, { foreignKey: 'appointmentId' });
+      MedicalHistorie.belongsTo(models.Doctor, { foreignKey: 'doctorId' });
     }
   }
-  History.init({
-    doctorID: DataTypes.INTEGER,
-    patientID: DataTypes.INTEGER,
-    description: DataTypes.TEXT,
-    files: DataTypes.TEXT,
-  }, {
-    sequelize,
-    modelName: 'History',
-  });
-  return History;
+  MedicalHistorie.init({
+    doctorId: {
+      type: DataTypes.INTEGER,
+      references: { model: 'Doctors', key: 'doctorId' }
+    },
+    appointmentId: {
+      type: DataTypes.INTEGER,
+      references: { model: 'Appointments', key: 'appointmentId' }
+    },
+    diagnosis: DataTypes.STRING,
+    doctorNotes: DataTypes.STRING,
+  }, { sequelize, modelName: 'MedicalHistorie' });
+  return MedicalHistorie;
 };

@@ -70,9 +70,24 @@ const getAllUserService = async ({ query }) => {
       }
     });
   };
+const deleteUser =  (userId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await DB.User.destroy({
+          where: {
+            id: userId
+          }
+        });
+        resolve("Delete Successfull");
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
   
 module.exports={
     getAllUserService:getAllUserService,
     postUser:postUser,
-    handleLogin: handleLogin
+    handleLogin: handleLogin,
+    deleteUser: deleteUser
 }

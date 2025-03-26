@@ -89,9 +89,34 @@ const handleLogin = async(req,res) =>{
         return res.status(400).json({ errCode: -1, message: "Server error!" });
     }
 }
+const deleteUser = async (req, res) => {
+    const userId = req.params.id;
+  
+    if (!userId) {
+      return res.status(400).json({
+        errCode: 1,
+        errMessage: 'Not Found ID',
+      });
+    }
+  
+    try {
+      const message = await userService.deleteUser(userId);
+      return res.status(200).json({
+        errCode: 0,
+        errMessage: message,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        errCode: 1,
+        errMessage: 'ERROR',
+      });
+    }
+  };
+  
 module.exports={
     getAllUser:getAllUser,
     postUser: postUser,
-    handleLogin: handleLogin
+    handleLogin: handleLogin,
+    deleteUser: deleteUser
 
 }

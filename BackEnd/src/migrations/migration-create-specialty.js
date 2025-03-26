@@ -2,33 +2,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Specialty', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-        description: {
-        type: Sequelize.TEXT
-      },
-      image: {
-        type: Sequelize.STRING
-      },
-      name: {
-        type: Sequelize.STRING
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+    await queryInterface.createTable('Specialties', {
+      specialtyId: { allowNull: false, autoIncrement: true, primaryKey: true, type: Sequelize.INTEGER },
+      specialtyName: { type: Sequelize.STRING },
+      specialtyDescription: { type: Sequelize.TEXT },
+      specialtyImage: { type: Sequelize.STRING },
+      departmentId: { type: Sequelize.INTEGER, references: { model: 'Departments', key: 'departmentId' }, onDelete: 'CASCADE' },
+      createdAt: { allowNull: false, type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+      updatedAt: { allowNull: false, type: Sequelize.DATE, defaultValue: Sequelize.NOW }
     });
+
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Specialty');
+    await queryInterface.dropTable('Specialties');
   }
 };
