@@ -6,7 +6,10 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Doctor extends Model {
     static associate(models) {
-      Doctor.belongsTo(models.Specialty, { foreignKey: 'specialtyId' });
+      Doctor.belongsToMany(models.Specialty, {
+        through: 'DoctorSpecialty',
+        foreignKey: 'doctorId'
+      });
       Doctor.hasMany(models.Schedule, { foreignKey: 'doctorId' });
       Doctor.hasMany(models.History, { foreignKey: 'doctorId' });
     }
@@ -17,13 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     phoneNumber: DataTypes.STRING,
     doctorPass: DataTypes.STRING,
     email: DataTypes.STRING,
-    specialtyId: {
-      type: DataTypes.INTEGER,
-      references: { model: 'Specialties', key: 'specialtyId' }
-    },
     doctorImage: DataTypes.STRING,
-    doctorDescription: DataTypes.STRING,
-    position: DataTypes.STRING
+    position: DataTypes.STRING,
+    introduce: DataTypes.TEXT,
+    HocVan: DataTypes.TEXT,
+    CongTac: DataTypes.TEXT
   }, { sequelize, modelName: 'Doctor' });
   return Doctor;
 };

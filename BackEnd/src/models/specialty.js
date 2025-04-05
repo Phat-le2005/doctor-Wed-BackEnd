@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
   class Specialty extends Model {
     static associate(models) {
       Specialty.belongsTo(models.Department, { foreignKey: 'departmentId' });
-      Specialty.hasMany(models.Doctor, { foreignKey: 'specialtyId' });
+      Specialty.belongsToMany(models.Doctor, {
+        through: 'DoctorSpecialty',
+        foreignKey: 'specialtyId'
+      });
     }
   }
   Specialty.init({
@@ -16,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     specialtyName: DataTypes.STRING,
     departmentId: {
       type: DataTypes.INTEGER,
-      references: { model: 'Departments', key: 'departmentId' }
+      references: { model: 'Department', key: 'departmentId' }
     }
   }, { sequelize, modelName: 'Specialty' });
   return Specialty;

@@ -6,13 +6,13 @@ const {
 module.exports = (sequelize, DataTypes) => {
     class Prescription extends Model {
       static associate(models) {
-        Prescription.belongsTo(models.MedicalHistorie, { foreignKey: 'historyId' });
+        Prescription.belongsTo(models.History, { foreignKey: 'historyId' });
       }
     }
     Prescription.init({
       historyId: {
         type: DataTypes.INTEGER,
-        references: { model: 'Histories', key: 'historyId' }
+        references: { model: 'History', key: 'historyId' }
       },
       medicine_name: DataTypes.STRING,
       dosage: DataTypes.STRING,

@@ -2,10 +2,10 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Schedules', {
+    await queryInterface.createTable('Schedule', {
       scheduleId: { allowNull: false, autoIncrement: true, primaryKey: true, type: Sequelize.INTEGER },
-      doctorId: { type: Sequelize.INTEGER, references: { model: 'Doctors', key: 'doctorId' }, onDelete: 'CASCADE' },
-      roomId: { type: Sequelize.INTEGER, references: { model: 'Rooms', key: 'roomId' }, onDelete: 'CASCADE' },
+      doctorId: { type: Sequelize.INTEGER, references: { model: 'Doctor', key: 'doctorId' }, onDelete: 'CASCADE' },
+      roomId: { type: Sequelize.INTEGER, references: { model: 'Room', key: 'roomId' }, onDelete: 'CASCADE' },
       workDay: { type: Sequelize.DATEONLY },
       startTime: { type: Sequelize.TIME },  
       endTime: { type: Sequelize.TIME }, 
@@ -15,6 +15,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Schedules');
+    await queryInterface.dropTable('Schedule');
   }
 };

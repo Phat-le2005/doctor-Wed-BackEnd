@@ -11,5 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Department.init({
     departmentName: DataTypes.STRING,
+    imageDepartment: DataTypes.STRING,
+    departmentDescription: DataTypes.STRING
   }, { sequelize, modelName: 'Department' });
   return Department;}
