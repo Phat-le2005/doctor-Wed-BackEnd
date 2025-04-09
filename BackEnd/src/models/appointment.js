@@ -13,13 +13,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Appointment.init({
+    appointmentId: {  // Sử dụng 'departmentId' làm khóa chính
+      type: DataTypes.INTEGER,
+      primaryKey: true,  // Đảm bảo 'departmentId' là khóa chính
+      autoIncrement: true // Tự động tăng giá trị cho 'departmentId'
+    },
     userId: {
       type: DataTypes.INTEGER,
-      references: { model: 'User', key: 'userId' }
+      references: { model: 'users', key: 'userId' }
     },
     scheduleId: {
       type: DataTypes.INTEGER,
-      references: { model: 'Schedule', key: 'scheduleId' }
+      references: { model: 'schedules', key: 'scheduleId' }
     },
     hoSoId: { type: DataTypes.INTEGER, references: { model: 'HoSo', key: 'id' } },
     status: DataTypes.ENUM('booked', 'completed', 'cancelled'),

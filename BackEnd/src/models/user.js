@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
+    userId: {  // Sử dụng 'departmentId' làm khóa chính
+      type: DataTypes.INTEGER,
+      primaryKey: true,  // Đảm bảo 'departmentId' là khóa chính
+      autoIncrement: true // Tự động tăng giá trị cho 'departmentId'
+    },
     email: { type: DataTypes.STRING, unique: true },
     password: DataTypes.STRING,
     userName: DataTypes.STRING,
@@ -20,6 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     sex: DataTypes.BOOLEAN,
     imageUser: DataTypes.STRING,
     BHYT: DataTypes.STRING
-  }, { sequelize, modelName: 'User' });
+  }, { sequelize, modelName: 'User',  tableName: 'users' });
   return User;
 };

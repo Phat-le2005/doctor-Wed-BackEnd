@@ -7,10 +7,19 @@ module.exports = (sequelize, DataTypes) => {
       Schedule.belongsTo(models.Doctor, { foreignKey: 'doctorId' });
       Schedule.belongsTo(models.Room, { foreignKey: 'roomId' });
       Schedule.hasMany(models.Appointment, { foreignKey: 'scheduleId' });
+      Schedule.belongsTo(models.Specialty, {
+        foreignKey: 'specialtyId',
+        as: 'specialty' // tuỳ chọn alias
+      });
     }
   }
 
   Schedule.init({
+    scheduleId: {  // Sử dụng 'departmentId' làm khóa chính
+      type: DataTypes.INTEGER,
+      primaryKey: true,  // Đảm bảo 'departmentId' là khóa chính
+      autoIncrement: true // Tự động tăng giá trị cho 'departmentId'
+    },
     currentNumber: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
@@ -27,12 +36,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     doctorId: {
       type: DataTypes.INTEGER,
-      references: { model: 'Doctor', key: 'doctorId' },
+      references: { model: 'doctors', key: 'doctorId' },
       allowNull: false
     },
     roomId: {
       type: DataTypes.INTEGER,
-      references: { model: 'Room', key: 'roomId' },
+      references: { model: 'rooms', key: 'roomId' },
       allowNull: false
     },
     startTime: {
@@ -47,13 +56,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false
     },
-    is_available: {
+    isAvailable: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
+    },
+    specialtyId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, { 
     sequelize, 
     modelName: 'Schedule',
+      tableName: 'schedules',
     hooks: {
       beforeValidate: (schedule) => {
         if (schedule.startTime >= schedule.endTime) {

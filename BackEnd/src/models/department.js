@@ -10,8 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Department.init({
+    departmentId: {  // Sử dụng 'departmentId' làm khóa chính
+      type: DataTypes.INTEGER,
+      primaryKey: true,  // Đảm bảo 'departmentId' là khóa chính
+      autoIncrement: true // Tự động tăng giá trị cho 'departmentId'
+    },
     departmentName: DataTypes.STRING,
     imageDepartment: DataTypes.STRING,
     departmentDescription: DataTypes.STRING
-  }, { sequelize, modelName: 'Department' });
+  }, { sequelize, modelName: 'Department',  tableName: 'departments' });
   return Department;}

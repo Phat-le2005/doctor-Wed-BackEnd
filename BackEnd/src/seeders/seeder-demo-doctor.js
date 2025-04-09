@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('Doctor', [
+    return queryInterface.bulkInsert('doctors', [
         {
             
             "doctorImage":"https://cdn.youmed.vn/photos/0b92b6dd-a7ab-40fe-8660-29f090b60185.jpg",
@@ -581,6 +581,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Doctor', null, {});
+    await queryInterface.bulkDelete('doctors', null, {});
 }
 };

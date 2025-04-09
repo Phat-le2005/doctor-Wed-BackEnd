@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('Specialty',[
+    return queryInterface.bulkInsert('Specialties',[
         { "specialtyName": "Viêm dạ dày – tá tràng", "specialtyDescription": "Đau bụng trên, buồn nôn, khó tiêu.", "departmentId": 1,"specialtyImage":"/public/Khoa/Daday/viemdaday.jpg" },
         { "specialtyName": "Trào ngược dạ dày – thực quản (GERD)", "specialtyDescription": "Ợ nóng, đau rát vùng ngực.", "departmentId": 1 ,"specialtyImage":"/public/Khoa/Daday/thuc-quan1.jpg"},
         { "specialtyName": "Viêm gan (A, B, C, D, E)", "specialtyDescription": "Vàng da, nước tiểu sẫm màu, mệt mỏi.", "departmentId": 1,"specialtyImage":"/public/Khoa/Daday/gan.jpg" },
@@ -44,6 +44,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Specialty', null, {});
+    await queryInterface.bulkDelete('Specialties', null, {});
 }
 };

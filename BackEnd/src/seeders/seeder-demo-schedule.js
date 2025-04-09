@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('departments', [
+    return queryInterface.bulkInsert('schedules', [
         {
             "departmentName": "Khoa Tiêu Hóa",
             "imageDepartment": "/public/Khoa/Daday/daday.webp",
@@ -44,6 +44,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('departments', null, {});
+    await queryInterface.bulkDelete('schedules', null, {});
 }
 };

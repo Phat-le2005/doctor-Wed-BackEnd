@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     HoSo.init({
       id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true }, // Sửa lại HSId thành id
-      userId: { type: DataTypes.INTEGER, references: { model: 'User', key: 'userId' } },
+      userId: { type: DataTypes.INTEGER, references: { model: 'users', key: 'userId' } },
       email: { type: DataTypes.STRING, unique: true },
       Name: DataTypes.STRING,
       address: DataTypes.STRING,
@@ -23,6 +23,6 @@ module.exports = (sequelize, DataTypes) => {
       Job: DataTypes.STRING,
       QuocTich: DataTypes.STRING,
       danToc: DataTypes.STRING
-    }, { sequelize, modelName: 'HoSo' });
+    }, { sequelize, modelName: 'HoSo'   ,tableName: 'hosos'});
     return HoSo;
   };

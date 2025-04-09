@@ -2,6 +2,9 @@
 import express from "express"
 import homeController from "../controller/homeController";
 import userController from "../controller/userController"
+import departmentController from "../controller/departmentController"
+import doctorController from "../controller/doctorController"
+import specialtyService from "../controller/specialtyController"
 let router = express.Router();
 const initWedRouter = (app)=>{
     router.get("/",homeController.getHomePage)
@@ -16,6 +19,14 @@ const initWedRouter = (app)=>{
     router.post("/api/login", userController.handleLogin);
     router.delete("/api/delete_user/:id", userController.deleteUser);
     
+    router.get("/api/get-all-department",departmentController.get_all_department)
+
+    router.get("/api/get_specialty/:id", specialtyService.get_specialty);
+
+    router.get("/api/get_doctor",doctorController.getAllDoctorPaginate );
+
+    router.get("/api/find_doctor/:id",doctorController.findDoctor)
+
     return app.use("/",router)
 }
 module.exports = initWedRouter

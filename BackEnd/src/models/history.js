@@ -11,16 +11,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   History.init({
+    historyId: {  // Sử dụng 'departmentId' làm khóa chính
+      type: DataTypes.INTEGER,
+      primaryKey: true,  // Đảm bảo 'departmentId' là khóa chính
+      autoIncrement: true // Tự động tăng giá trị cho 'departmentId'
+    },
     doctorId: {
       type: DataTypes.INTEGER,
-      references: { model: 'Doctor', key: 'doctorId' }
+      references: { model: 'doctors', key: 'doctorId' }
     },
     appointmentId: {
       type: DataTypes.INTEGER,
-      references: { model: 'Appointment', key: 'appointmentId' }
+      references: { model: 'appointments', key: 'appointmentId' }
     },
     diagnosis: DataTypes.STRING,
     doctorNotes: DataTypes.STRING,
-  }, { sequelize, modelName: 'History' });
+  }, { sequelize, modelName: 'History',  tableName: 'histories' });
   return History;
 };
