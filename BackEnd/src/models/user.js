@@ -19,12 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     email: { type: DataTypes.STRING, unique: true },
     password: DataTypes.STRING,
     userName: DataTypes.STRING,
-    address: DataTypes.STRING,
-    dateOfBirth: DataTypes.DATE,
-    phoneNumber: DataTypes.STRING,
-    sex: DataTypes.BOOLEAN,
-    imageUser: DataTypes.STRING,
-    BHYT: DataTypes.STRING
+    provider: DataTypes.STRING,
+  
   }, { sequelize, modelName: 'User',  tableName: 'users' });
   return User;
 };

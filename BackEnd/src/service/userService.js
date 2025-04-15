@@ -84,10 +84,22 @@ const deleteUser =  (userId) => {
       }
     });
   };
-  
+  const getOneUser = async (userId) => {
+    try {
+      const user = await DB.User.findOne({ where: { userId } }); // Kiểm tra kỹ truy vấn
+      if (!user) {
+        throw new Error("Không tìm thấy người dùng");
+      }
+      return user; // Trả về kết quả nếu tìm thấy
+    } catch (error) {
+      console.error("Error in getOneUser service: ", error);
+      throw new Error("Không tìm thấy người dùng");
+    }
+  };
 module.exports={
     getAllUserService:getAllUserService,
     postUser:postUser,
     handleLogin: handleLogin,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    getOneUser:getOneUser
 }

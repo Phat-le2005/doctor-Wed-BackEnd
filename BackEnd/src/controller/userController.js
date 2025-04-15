@@ -112,11 +112,38 @@ const deleteUser = async (req, res) => {
       });
     }
   };
+  const getOneUser = async (req, res) => {
+    try {
+      // Kiểm tra xem req.user có chứa userId không
+      const userId = req.user?.id; 
+      if (!userId) {
+        console.log("Không tìm thấy userId trong req.user");
+        return res.status(400).json({ message: "Không tìm thấy thông tin người dùng" });
+      }
+  
+      // Gọi service để lấy dữ liệu người dùng
+      const data = await userService.getOneUser(userId);
+      if (!data) return res.status(404).json({ message: "Không tìm thấy người dùng" });
+  
+      return res.status(200).json({
+        user: {
+          userName: data.userName,
+          email: data.email,
+          id: data.userId
+        }
+      });
+    } catch (error) {
+      console.error("Error in getOneUser controller: ", error); // Log chi tiết lỗi
+      return res.status(500).json({ errMessage: error.message });
+    }
+  };
+  
   
 module.exports={
     getAllUser:getAllUser,
     postUser: postUser,
     handleLogin: handleLogin,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    getOneUser:getOneUser
 
 }
