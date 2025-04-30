@@ -86,3 +86,38 @@ export const refreshToken = async (req, res) => {
     res.status(err.code || 500).json({ error: err.message });
   }
 };
+export const AuthDoctor = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ error: "Email và mật khẩu là bắt buộc" });
+
+  try {
+    const result = await authService.AuthDoctor(email, password);
+
+    if (result.errCode !== 0) {
+      return res.status(401).json({ error: result.errMess });
+    }
+
+    res.cookie("access_token", result.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 15 * 60 * 1000, // 15 phút
+    });
+
+    res.cookie("refresh_token", result.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+    });
+
+    res.json({
+      message: result.errMess,
+      user: result.data,
+    });
+  } catch (e) {
+    console.error("Đăng nhập bác sĩ thất bại:", e);
+    res.status(500).json({ error: "Lỗi máy chủ" });
+  }
+};

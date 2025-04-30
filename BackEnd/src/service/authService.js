@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { hashOTP, verifyOTP } from "../util/otp.js";
 import { generateAccessToken, generateRefreshToken } from "../util/jwt.js";
 import { sendOtpEmail } from "../util/mailer.js"; // mới thêm
+import { where } from "sequelize";
 
 const OTP_STORE = {}; // giả lập lưu OTP tạm thời
 setInterval(() => {
@@ -85,5 +86,28 @@ export const refreshToken = async (refreshToken) => {
   } catch (err) {
     console.error("❌ Lỗi khi xác thực refresh token:", err);
     throw { code: 403, message: "Refresh token không hợp lệ" };
+  }
+};
+export const AuthDoctor = async (email, password) => {
+  try {
+    const doctor = await DB.Doctor.findOne({
+      where: { email: email, doctorPass: password },
+    });
+
+    if (!doctor)
+      return { errCode: 1, errMess: "Không có tài khoản", data: null };
+
+    const accessToken = generateAccessToken({ id: doctor.doctorId, email: doctor.email });
+    const refreshToken = generateRefreshToken({ id: doctor.doctorId });
+
+    return {
+      errCode: 0,
+      errMess: "Đăng nhập thành công",
+      data: doctor,
+      accessToken,
+      refreshToken,
+    };
+  } catch (e) {
+    return { errCode: 1, errMess: "Lỗi server", data: null };
   }
 };

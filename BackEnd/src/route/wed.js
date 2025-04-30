@@ -8,9 +8,13 @@ import specialtyService from "../controller/specialtyController"
 import scheduleController from "../controller/schedule"
 import passport from "passport";
 import "../service/passport.js"; // load cấu hình Google
-import { sendOtp, verifyOtp, googleLogin, refreshToken,googleCallback } from "../controller/authController";
+import { sendOtp, verifyOtp, googleLogin, refreshToken,googleCallback, AuthDoctor } from "../controller/authController";
 import { verifyAccessToken } from "../util/jwt.js";
 import { CheckAccessToken } from "../util/authMiddlewre.js";
+import hoSoController from "../controller/hoSoController.js"
+import { getAppointmentDetail } from "../controller/phieuKhamController.js";
+import historyController from "../controller/historyController.js"
+import { HandleAppointmentController,HandleGetAppointment,HandleUpdateAppointment } from "../controller/appointmentController.js";
 export const isAuthenticated = (req, res, next) => {
   const token = req.cookies.access_token; // lấy token từ cookie
   if (!token) {
@@ -42,9 +46,12 @@ const initWedRouter = (app)=>{
     router.get("/api/get-all-department",departmentController.get_all_department)
 
     router.get("/api/get_specialty/:id", specialtyService.get_specialty);
+    router.get("/api/getallspecialty",specialtyService.getDoctorsBySpecialty)
 
     router.get("/api/get_doctor",doctorController.getAllDoctorPaginate );
-
+    router.put("/api/update_doctoremail/:id", doctorController.handleUpdateEmailDoctor);
+    router.put("/api/update_doctorphone/:id", doctorController.handleUpdatePhoneDoctor);
+    router.put("/api/update_doctorpassword/:id", doctorController.handleUpdatePasswordDoctor);
     router.get("/api/find_doctor/:id",doctorController.findDoctor)
 
     router.get("/api/get_schedule",scheduleController.get_schedule)
@@ -60,8 +67,20 @@ const initWedRouter = (app)=>{
         googleCallback // hàm mới trong authController
       );
     router.post("/refresh-token", refreshToken);
-      
+    router.post("/api/login_doctor",AuthDoctor)
     router.get("/api/get_user",CheckAccessToken,userController.getOneUser)
+
+    router.get("/api/get_hoso/:userId",hoSoController.handleGetHoso)
+    router.delete("/api/delete_hoso/:id",hoSoController.handleDeleteHoSo)
+    router.put("/api/update_hoso/:id",hoSoController.handleUpdateHoso)
+    router.post("/api/create_hoso",hoSoController.handleCreateHoso)
+
+    router.post("/api/create_appointment",HandleAppointmentController)
+    router.get("/api/get_appointment/:id",HandleGetAppointment)
+    router.put("/api/accept_appointment/:id",HandleUpdateAppointment)
+    router.get("/api/get_PhieuKB/:id",getAppointmentDetail)
+
+    router.post("/api/create_history",historyController.handleCreateHistory)
     return app.use("/",router)
 }
 module.exports = initWedRouter

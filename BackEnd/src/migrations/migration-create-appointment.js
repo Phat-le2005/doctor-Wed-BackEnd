@@ -6,7 +6,7 @@ module.exports = {
       appointmentId: { allowNull: false, autoIncrement: true, primaryKey: true, type: Sequelize.INTEGER },
       userId: { type: Sequelize.INTEGER, references: { model: 'users', key: 'userId' }, onDelete: 'CASCADE' },
       scheduleId: { type: Sequelize.INTEGER, references: { model: 'schedules', key: 'scheduleId' }, onDelete: 'CASCADE' },
-      hoSoId: { type: Sequelize.INTEGER, references: { model: 'hosos', key: 'HSId' }, onDelete: 'CASCADE' }, // Thêm hoSoId
+      HSId: { type: Sequelize.INTEGER, references: { model: 'hosos', key: 'HSId' }, onDelete: 'CASCADE' }, // Thêm hoSoId
       status: { type: Sequelize.ENUM('booked', 'completed', 'cancelled'), defaultValue: 'booked' },
       createdAt: { allowNull: false, type: Sequelize.DATE, defaultValue: Sequelize.NOW },
       updatedAt: { allowNull: false, type: Sequelize.DATE, defaultValue: Sequelize.NOW }

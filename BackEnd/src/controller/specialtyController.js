@@ -23,8 +23,30 @@ const get_specialty = async (req, res) => {
     return res.status(500).json({ errCode: 1, errMess: 'Server error' });
   }
 };
-  
+const getDoctorsBySpecialty = async (req, res) => {
+  const { page, limit, specialtyId } = req.query;
+
+  if (!specialtyId) {
+    return res.status(400).json({
+      errCode: 1,
+      errMessage: 'Thiếu specialtyId trong query'
+    });
+  }
+
+  try {
+    const result = await specialtyService.getDoctorsBySpecialtyId(specialtyId, page, limit);
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
+      errCode: 1,
+      errMessage: 'Lỗi server',
+      error: e.message
+    });
+  }
+};
+
 module.exports={
-    get_specialty: get_specialty
+    get_specialty: get_specialty,
+    getDoctorsBySpecialty: getDoctorsBySpecialty
 
 }

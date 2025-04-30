@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       Appointment.belongsTo(models.User, { foreignKey: 'userId' });
       Appointment.belongsTo(models.Schedule, { foreignKey: 'scheduleId' });
       Appointment.hasOne(models.History, { foreignKey: 'appointmentId' });
-      Appointment.belongsTo(models.HoSo, { foreignKey: 'hoSoId' });
+      Appointment.belongsTo(models.HoSo, { foreignKey: 'HSId' });
     }
   }
   Appointment.init({
@@ -26,9 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       references: { model: 'schedules', key: 'scheduleId' }
     },
-    hoSoId: { type: DataTypes.INTEGER, references: { model: 'HoSo', key: 'id' } },
+    HSId: { type: DataTypes.INTEGER, references: { model: 'HoSo', key: 'HSId' } },
     status: DataTypes.ENUM('booked', 'completed', 'cancelled'),
-    date: DataTypes.DATE
+    day: DataTypes.DATE
   }, { sequelize, modelName: 'Appointment' });
   return Appointment;
 };
