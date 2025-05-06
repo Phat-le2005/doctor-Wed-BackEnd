@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'doctorId',  // Trường khóa ngoài liên kết với Doctor
         otherKey: 'specialtyId'  // Trường khóa ngoài liên kết với Specialty
       });
+      Doctor.belongsTo(models.Department, {
+        foreignKey: 'departmentId',
+      });
       Doctor.hasMany(models.Schedule, { foreignKey: 'doctorId' });
       Doctor.hasMany(models.History, { foreignKey: 'doctorId' });
     }
@@ -23,10 +26,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     doctorName: DataTypes.STRING,
     sex: DataTypes.BOOLEAN,
+    departmentId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     phoneNumber: DataTypes.STRING,
     doctorPass: DataTypes.STRING,
     email: DataTypes.STRING,
     doctorImage: DataTypes.STRING,
+    role:DataTypes.INTEGER,
     position: DataTypes.STRING,
     introduce: DataTypes.TEXT,
     HocVan: DataTypes.TEXT,

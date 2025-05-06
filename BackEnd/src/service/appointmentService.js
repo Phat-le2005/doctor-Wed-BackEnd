@@ -17,7 +17,7 @@ const createAppointment = (data) => {
             await DB.Appointment.create({
                 userId: data.userId,
                 scheduleId: data.scheduleId,
-                hoSoId: data.hoSoId,
+                HSId: data.hoSoId,
                 day: data.day,
                 Stt: newStt
             }, { transaction: t });

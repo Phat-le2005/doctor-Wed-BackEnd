@@ -135,15 +135,107 @@ const handleUpdatePasswordDoctor = async (req, res) => {
       error: error.message
     });
   }
+};const handleGetDoctorKeyword = async (req, res) => {
+    try {
+        const keyWord = req.query.search || "";
+        const data = await doctorService.getDoctorKeyword(keyWord);
+        return res.status(200).json({
+            errCode: 0,
+            data: data
+        });
+    } catch (e) {
+        return res.status(500).json({
+            errCode: 1,
+            errMess: e.message || 'Internal Server Error'
+        });
+    }
 };
+const handleCreateDoctor = async(req,res) => {
+     let data = req.body;
+        
+        if (!data ) {
+            return res.status(400).json({
+                errCode: 1,
+                errMessage: "Missing required fields",
+                user: '',
+            });
+        }
+        try {
+            let message = await doctorService.CreateDoctor(data);
+            return res.status(200).json({
+                errCode: 0,
+                errMessage: message,
+                data: data
+            });
+        } catch (error) {
+            return res.status(500).json({
+                errCode: 0,
+                errMessage: "Internal server error",
+                error: error.message
+            });
+        }
+}
+const handleDeleteDoctor = async (req,res) =>{
+      const doctorId = req.params.id;
+        
+        if (!doctorId) {
+            return res.status(400).json({
+                errCode: 1,
+                errMessage: 'Not Found ID'
+            });
+        }
+    
+        try {
+            const message = await doctorService.DeleteDoctor(doctorId);
+            return res.status(200).json({
+                errCode: 0,
+                errMessage: message
+            });
+        } catch (e) {
+            // Cung cấp thông báo lỗi chi tiết từ catch
+            return res.status(500).json({
+                errCode: 1,
+                errMessage: e.message || 'Error'
+            });
+        }
+}
 
+const handleUpdateRole = async (req,res) =>{
+  try {
+    const doctorId = req.params.id
+    const {role} = req.body
+    if (!role) {
+      return res.status(400).json({ message: 'Role is required', errCode: 1 });
+    }
 
+    const updatedDoctor = await doctorService.UpdateRole(doctorId,role);
 
+    if (updatedDoctor) {
+      return res.status(200).json({
+        message: 'Doctor role updated successfully',
+        data: updatedDoctor,
+        errCode: 0
+      });
+    } else {
+      return res.status(404).json({ message: 'Doctor not found', errCode: 1 });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+      errCode: 1
+    });
+  }
+};
 module.exports={
     getAllDoctorPaginate: getAllDoctorPaginate,
     findDoctor:findDoctor,
     handleUpdateEmailDoctor: handleUpdateEmailDoctor,
     handleUpdatePhoneDoctor: handleUpdatePhoneDoctor,
-    handleUpdatePasswordDoctor: handleUpdatePasswordDoctor
+    handleUpdatePasswordDoctor: handleUpdatePasswordDoctor,
+    handleGetDoctorKeyword: handleGetDoctorKeyword,
+    handleCreateDoctor: handleCreateDoctor,
+    handleDeleteDoctor: handleDeleteDoctor,
+    handleUpdateRole: handleUpdateRole
 
 }

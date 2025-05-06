@@ -26,8 +26,32 @@ const get_schedule = (doctorId, specialtyId) => {
     }
   });
 }
+const getAllScheduleDoctor = (doctorId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { count, rows } = await DB.Schedule.findAndCountAll({
+        where: {
+          doctorId: doctorId
+        },
+        order: [['createdAt', 'DESC']],
+        include: [
+                  {
+                    model: DB.Room,
+                    attributes: ['roomNumber', 'floor',"toa"],
+                  }
+                ]
+      });
 
+      resolve({
+        schedules: rows
+      });
+
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 module.exports = {
-  get_schedule
+  get_schedule,getAllScheduleDoctor
 }
 

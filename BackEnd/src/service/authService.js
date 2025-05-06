@@ -5,7 +5,7 @@ import { hashOTP, verifyOTP } from "../util/otp.js";
 import { generateAccessToken, generateRefreshToken } from "../util/jwt.js";
 import { sendOtpEmail } from "../util/mailer.js"; // mới thêm
 import { where } from "sequelize";
-
+import bcrypt from 'bcryptjs';
 const OTP_STORE = {}; // giả lập lưu OTP tạm thời
 setInterval(() => {
   const now = Date.now();
@@ -88,26 +88,18 @@ export const refreshToken = async (refreshToken) => {
     throw { code: 403, message: "Refresh token không hợp lệ" };
   }
 };
-export const AuthDoctor = async (email, password) => {
-  try {
-    const doctor = await DB.Doctor.findOne({
-      where: { email: email, doctorPass: password },
-    });
 
-    if (!doctor)
-      return { errCode: 1, errMess: "Không có tài khoản", data: null };
-
-    const accessToken = generateAccessToken({ id: doctor.doctorId, email: doctor.email });
-    const refreshToken = generateRefreshToken({ id: doctor.doctorId });
-
-    return {
-      errCode: 0,
-      errMess: "Đăng nhập thành công",
-      data: doctor,
-      accessToken,
-      refreshToken,
-    };
-  } catch (e) {
-    return { errCode: 1, errMess: "Lỗi server", data: null };
+export const authDoctorService = async (email, password) => {
+  const doctor = await DB.Doctor.findOne({ where: { email } });
+  if (!doctor) {
+    return { errCode: 1, errMess: "Không có tài khoản", data: null };
   }
+  const isMatch = await bcrypt.compare(password, doctor.doctorPass);
+  if (!isMatch) {
+    return { errCode: 1, errMess: "Sai mật khẩu", data: null };
+  }
+  const payload = { id: doctor.doctorId, email: doctor.email, role: doctor.role };
+  const accessToken = generateAccessToken(payload);
+  const refreshToken = generateRefreshToken(payload);
+  return { errCode: 0, errMess: "Đăng nhập thành công", data: doctor, accessToken, refreshToken };
 };

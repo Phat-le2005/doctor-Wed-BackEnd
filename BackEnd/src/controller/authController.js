@@ -1,5 +1,5 @@
 import * as authService from "../service/authService.js";
-
+import { setDoctorAuthCookies } from "../util/cookie.js";
 export const sendOtp = async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: "Email là bắt buộc" });
@@ -22,14 +22,14 @@ export const verifyOtp = async (req, res) => {
     // Log thông tin người dùng
     console.log("User created or authenticated: ", user);
 
-    res.cookie("access_token", accessToken, {
+    res.cookie("user_access_token", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
       maxAge: 15 * 60 * 1000,
     });
 
-    res.cookie("refresh_token", refreshToken, {
+    res.cookie("user_refresh_token", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
@@ -51,13 +51,13 @@ export const googleLogin = (req, res) => {
 export const googleCallback = async (req, res) => {
   try {
     const { user, accessToken, refreshToken } = await authService.googleCallback(req.user);
-    res.cookie("access_token", accessToken, {
+    res.cookie("user_access_token", accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
       maxAge: 15 * 60 * 1000,
     });
-    res.cookie("refresh_token", refreshToken, {
+    res.cookie("user_refresh_token", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
@@ -71,53 +71,50 @@ export const googleCallback = async (req, res) => {
 };
 
 export const refreshToken = async (req, res) => {
-  const token = req.cookies.refresh_token;
-  if (!token) return res.status(401).json({ error: "No refresh token" });
+  // Lấy refresh token từ cookie user hoặc doctor
+  const userRt = req.cookies.user_refresh_token;
+  const doctorRt = req.cookies.doctor_refresh_token;
+  const token = userRt || doctorRt;
+
+  if (!token) {
+    return res.status(401).json({ error: "NoRefreshToken" });
+  }
+
   try {
-    const accessToken = await authService.refreshToken(token);
-    res.cookie("access_token", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-      maxAge: 15 * 60 * 1000,
-    });
-    res.json({ message: "Token refreshed" });
+    // authService.refreshToken trả về { accessToken }
+    const { accessToken } = await authService.refreshTokenService(token);
+
+    // Gán lại cookie Access Token mới
+    if (userRt) {
+      setAuthCookies(res, accessToken, userRt);
+    } else {
+      setDoctorAuthCookies(res, accessToken, doctorRt);
+    }
+
+    return res.json({ message: "TokenRefreshed", accessToken });
   } catch (err) {
-    res.status(err.code || 500).json({ error: err.message });
+    if (err.code === 403) {
+      return res.status(403).json({ error: "RefreshInvalid" });
+    }
+    console.error("❌ Lỗi refreshToken:", err);
+    return res.status(500).json({ error: "ServerError" });
   }
 };
 export const AuthDoctor = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password)
+  if (!email || !password) {
     return res.status(400).json({ error: "Email và mật khẩu là bắt buộc" });
-
+  }
   try {
-    const result = await authService.AuthDoctor(email, password);
-
+    const result = await authService.authDoctorService(email, password);
     if (result.errCode !== 0) {
       return res.status(401).json({ error: result.errMess });
     }
-
-    res.cookie("access_token", result.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 15 * 60 * 1000, // 15 phút
-    });
-
-    res.cookie("refresh_token", result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
-    });
-
-    res.json({
-      message: result.errMess,
-      user: result.data,
-    });
+    // Gán cookie riêng cho doctor
+    setDoctorAuthCookies(res, result.accessToken, result.refreshToken);
+    return res.json({ message: result.errMess, doctor: result.data });
   } catch (e) {
-    console.error("Đăng nhập bác sĩ thất bại:", e);
-    res.status(500).json({ error: "Lỗi máy chủ" });
+    console.error("❌ Lỗi AuthDoctor:", e);
+    return res.status(500).json({ error: "Lỗi server" });
   }
 };

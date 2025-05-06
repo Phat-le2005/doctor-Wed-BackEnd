@@ -1,26 +1,21 @@
-import departmentService from "../service/departmentService"
-const get_all_department = async (req, res) => {
+import roomService from "../service/roomService"
+const handleGetAllRoom = async (req,res) => {
     try {
-        const data = await departmentService.get_all_department();
-        if (!data || data.length === 0) {  // Kiểm tra mảng rỗng
-            return res.status(400).json({
-                errCode: 1,
-                errMess: 'No Input'
-            });
-        }
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+    
+        const data = await roomService.getAllRoom(page, limit);
+    
         return res.status(200).json({
-            errCode: 0,
-            data: data
+          errCode: 0,
+          ...data,
         });
-    } catch (e) {
-        return res.status(500).json({
-            errCode: 2,
-            errMess: 'Internal Server Error',
-            detail: e.message // Truyền lỗi để dễ debug
-        });    
-    }
-};
-const handleCreateDepartment = async(req,res) => {
+      } catch (e) {
+        console.error("Server Error:", e);
+        return res.status(500).json({ errCode: 1, errMess: 'Server error' });
+      }
+}
+const handleCreateRoom  = async(req,res) => {
      let data = req.body;
         
         if (!data ) {
@@ -31,7 +26,7 @@ const handleCreateDepartment = async(req,res) => {
             });
         }
         try {
-            let message = await departmentService.createDepartment(data);
+            let message = await roomService.createRoom(data);
             return res.status(200).json({
                 errCode: 0,
                 errMessage: message,
@@ -45,10 +40,10 @@ const handleCreateDepartment = async(req,res) => {
             });
         }
 }
-const handleDeleteDepartment = async (req,res) =>{
-      const departmentId = req.params.id;
+const handleDeleteRoom = async (req,res) =>{
+      const roomId = req.params.id;
         
-        if (!departmentId) {
+        if (!roomId) {
             return res.status(400).json({
                 errCode: 1,
                 errMessage: 'Not Found ID'
@@ -56,7 +51,7 @@ const handleDeleteDepartment = async (req,res) =>{
         }
     
         try {
-            const message = await departmentService.DeleteDepartment(departmentId);
+            const message = await roomService.DeleteRoom(roomId);
             return res.status(200).json({
                 errCode: 0,
                 errMessage: message
@@ -70,16 +65,16 @@ const handleDeleteDepartment = async (req,res) =>{
         }
 }
 
-const handleUpdateDepartment = async (req,res) => {
+const handleUpdateRoom = async (req,res) => {
      try {
             const id  = req.params.id;
             const userData = req.body;
         
             // Gọi service để cập nhật người dùng
-            const updatedUser = await departmentService.UpdateDepartment(id, userData);
+            const updatedUser = await roomService.UpdateRoom(id, userData);
         
             if (updatedUser) {
-              return res.status(200).json({ message: 'Department updated successfully', data: updatedUser, errCode: 0 });
+              return res.status(200).json({ message: 'Room updated successfully', data: updatedUser, errCode: 0 });
             } else {
               return res.status(404).json({ message: 'not found',errCode:1 });
             }
@@ -87,10 +82,9 @@ const handleUpdateDepartment = async (req,res) => {
             return res.status(500).json({ message: 'Server error', error: error.message ,errCode:1});
           }
 }
-module.exports={
-    get_all_department: get_all_department,
-    handleCreateDepartment: handleCreateDepartment,
-    handleDeleteDepartment: handleDeleteDepartment,
-    handleUpdateDepartment: handleUpdateDepartment
-
+module.exports = {
+    handleGetAllRoom: handleGetAllRoom,
+    handleCreateRoom: handleCreateRoom,
+    handleDeleteRoom: handleDeleteRoom,
+    handleUpdateRoom: handleUpdateRoom
 }

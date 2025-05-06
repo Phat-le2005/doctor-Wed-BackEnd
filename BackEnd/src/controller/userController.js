@@ -108,7 +108,7 @@ const deleteUser = async (req, res) => {
     } catch (error) {
       return res.status(500).json({
         errCode: 1,
-        errMessage: 'ERROR',
+        errMessage: error,
       });
     }
   };

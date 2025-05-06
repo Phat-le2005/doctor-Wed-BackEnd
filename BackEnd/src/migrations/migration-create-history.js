@@ -8,7 +8,7 @@ module.exports = {
       doctorId: { type: Sequelize.INTEGER, references: { model: 'doctors', key: 'doctorId' } },
       diagnosis: { type: Sequelize.TEXT },
       doctorNotes: { type: Sequelize.TEXT },
-      createdAt: { allowNull: false, type: Sequelize.DATE, defaultValue: Sequelize.NOW }
+      
     });
   },
   async down(queryInterface, Sequelize) {

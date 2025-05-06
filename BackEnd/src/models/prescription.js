@@ -6,7 +6,11 @@ const {
 module.exports = (sequelize, DataTypes) => {
     class Prescription extends Model {
       static associate(models) {
-        Prescription.belongsTo(models.History, { foreignKey: 'historyId' });
+        Prescription.belongsToMany(models.History, {
+          through: 'HistoryPrescription',
+          foreignKey: 'prescriptionId',
+          otherKey: 'historyId'
+        });
       }
     }
     Prescription.init({
@@ -19,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         references: { model: 'histories', key: 'historyId' }
       },
-      medicine_name: DataTypes.STRING,
+      medicineName: DataTypes.STRING,
       dosage: DataTypes.STRING,
-      usage_instruction: DataTypes.STRING
-    }, { sequelize, modelName: 'Prescription'  ,tableName: 'prescriptions' });
+      usageInstruction: DataTypes.STRING
+    }, { sequelize, modelName: 'Prescription'  ,tableName: 'prescriptions', timestamps: false });
     return Prescription;
   };

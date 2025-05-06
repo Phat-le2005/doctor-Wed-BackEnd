@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       History.belongsTo(models.Appointment, { foreignKey: 'appointmentId' });
       History.belongsTo(models.Doctor, { foreignKey: 'doctorId' });
+      History.belongsToMany(models.Prescription, {
+        through: 'HistoryPrescription',
+        foreignKey: 'historyId',
+        otherKey: 'prescriptionId'
+      });
     }
   }
   History.init({
@@ -26,6 +31,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     diagnosis: DataTypes.STRING,
     doctorNotes: DataTypes.STRING,
-  }, { sequelize, modelName: 'History',  tableName: 'histories' });
+  }, { sequelize, modelName: 'History',  tableName: 'histories', timestamps: false  });
   return History;
 };

@@ -12,8 +12,8 @@ const cors = require('cors');
 
 const app = express()
 app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json({ limit: '50mb' })); // Cấu hình giới hạn dữ liệu JSON là 50MB
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' })); 
 app.use(cors({
     origin: "http://localhost:3000", // 👈 frontend domain cụ thể
     credentials: true,

@@ -75,7 +75,7 @@ const deleteUser =  (userId) => {
       try {
         await DB.User.destroy({
           where: {
-            id: userId
+            userId: userId
           }
         });
         resolve("Delete Successfull");
