@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     departmentId: {
       type: DataTypes.INTEGER,
       references: { model: 'departments', key: 'departmentId' }
+      ,onDelete: 'CASCADE' 
     }
   }, { sequelize, modelName: 'Specialty',  tableName: 'specialties' });
   return Specialty;

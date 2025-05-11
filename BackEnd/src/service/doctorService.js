@@ -1,3 +1,4 @@
+import department from "../models/department";
 import DB from "../models/index"
 import { Op } from "sequelize";
 const bcrypt = require('bcryptjs');
@@ -21,6 +22,10 @@ const getAllDoctorPaginate = (page, limit) => {
                 attributes: ['departmentId', 'departmentName']
               }
             ]
+          }
+          ,{
+            model: DB.Department,
+            attributes:['departmentName']
           }
         ]
       });
@@ -159,6 +164,7 @@ const DeleteDoctor = (doctorId) => {
 
 const CreateDoctor = (data) => {
   return new Promise(async (resolve, reject) => {
+    console.log(data)
     try {
       // Hash mật khẩu trước khi lưu
       const salt = await bcrypt.genSalt(10);

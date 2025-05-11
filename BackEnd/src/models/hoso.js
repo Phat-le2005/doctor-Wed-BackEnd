@@ -22,6 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       CMND: DataTypes.STRING,
       Job: DataTypes.STRING,
       danToc: DataTypes.STRING
-    }, { sequelize, modelName: 'HoSo'   ,tableName: 'hosos'});
+    }, { sequelize, modelName: 'HoSo'   ,tableName: 'hosos',timestamps: false });
     return HoSo;
   };

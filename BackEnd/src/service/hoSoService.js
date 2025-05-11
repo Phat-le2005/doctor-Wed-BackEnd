@@ -2,13 +2,14 @@ import { where } from "sequelize"
 import DB from "../models/index"
 const createHoso = (data)=>{
     return new Promise(async(resolve,reject)=>{
+        console.log(data)
         try {
            await DB.HoSo.create({
            userId: data.userId,
            Name: data.name,
            DateOfBirth: data.day,
            phone: data.phoneNumber,
-           Sex: data.sex,
+           Sex: data.sex  ,
            CMND: data.id,
            email: data.email,
            Job: data.job,
